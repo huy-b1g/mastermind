@@ -9,7 +9,7 @@ class Maker
   def gen_code
     code = ""
     4.times { code += rand(1..6).to_s }
-    code.to_i
+    code
   end
 end
 
@@ -45,11 +45,25 @@ class Game
   def initialize
     @@round += 1
     @guess = Breaker.new.guess
+    judge_round
   end
- 
-#  private
+
+  def self.call_code
+    @@code
+  end
+
+  private
+
+  def judge_round
+    if @guess == @@code
+      puts "end game"
+    else
+      give_round_result
+    end
+  end
+
 
 end
 
+puts Game.call_code
 round1 = Game.new
-puts round1.guess
