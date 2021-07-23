@@ -48,7 +48,7 @@ class Game
     judge_round
   end
 
-  def self.call_code
+  def self.call_code #method for debugging
     @@code
   end
 
