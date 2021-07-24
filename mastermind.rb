@@ -71,24 +71,24 @@ class Game
   def calc_round_result
     arr_guess = @guess.split('')
     arr_code = @@code.split('')
-    @round_score = get_score(arr_guess, arr_code)
+    get_score(arr_guess, arr_code)
   end
 
   def get_score(a, b)
-    result = []
     a.each_with_index do |num, idx|
       if num == b[idx]
-        result << 'O'
+        @round_score << 'O'
         a.delete_at(idx)
         b.delete_at(idx)
         get_score(a, b)
       else
         removed_num = b.delete_at(idx)
-        result << 'X' if b.include?(num)
+        @round_score << 'X' if b.include?(num)
         b.insert(idx, removed_num)
       end
+      break if @round_score.length == 4
     end
-    result
+    @round_score
   end
 end
 
