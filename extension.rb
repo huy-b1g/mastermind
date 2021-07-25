@@ -20,7 +20,7 @@ def get_score(a, b, result)
   end
   result
 end
-a = [2, 4, 5, 2]
-b = [2, 5, 2, 2]
+a = [6, 4, 5, 4]
+b = [6, 4, 4, 6]
 
 puts get_score(a, b, result)
