@@ -75,18 +75,20 @@ class Game
   end
 
   def get_score(a, b)
+    correct_position = []
     a.each_with_index do |num, idx|
       if num == b[idx]
         @round_score << 'O'
-        a.delete_at(idx)
-        b.delete_at(idx)
-        get_score(a, b)
-      else
-        removed_num = b.delete_at(idx)
-        @round_score << 'X' if b.include?(num)
-        b.insert(idx, removed_num)
+        correct_position << idx
       end
-      break if @round_score.length == 4
+    end
+    rmd_correct_guess_arr = a.reject.with_index { |_e, i| correct_position.include? i }
+    rmd_correct_code_arr = b.reject.with_index { |_e, i| correct_position.include? i }
+
+    rmd_correct_guess_arr.each_with_index do |num, idx|
+      removed_num = rmd_correct_code_arr.delete_at(idx)
+      @round_score << 'X' if rmd_correct_code_arr.include?(num)
+      rmd_correct_code_arr.insert(idx, removed_num)
     end
     @round_score
   end
