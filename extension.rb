@@ -22,5 +22,12 @@ def get_score(a, b, result)
 end
 a = [6, 4, 5, 4]
 b = [6, 4, 4, 6]
+ def test
+    input = gets.chomp
+    until ["1","2"].include? input
+      input = gets.chomp
+    end
+    puts input
+ end
 
-puts get_score(a, b, result)
+test

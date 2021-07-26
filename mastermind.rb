@@ -44,17 +44,16 @@ class Breaker
 end
 
 class Game
-  attr_reader :guess
-
-  @@code = Maker.new.code
+  #attr_reader :guess
   @@round = 0
+  @@role = ""
 
   def initialize
     @@round += 1
-    @guess = Breaker.new(@@round).guess
-    @round_score = []
-    judge_round
+    maker_or_breaker
   end
+  
+  @@code = Maker.new.code
 
   # method for debugging
   def self.call_code
@@ -74,6 +73,32 @@ class Game
   end
 
   private
+  
+  def maker_or_breaker
+    if @@role == "2"
+      is_breaker
+    elsif @@role == "1"
+      is_maker
+    else
+      puts "It's time to play!\nWould you like to be the code MAKER or code BREAKER?\n\nPress '1' to be the code MAKER\nPress '2' to be the code BREAKER"
+      @@role = gets.chomp
+      until ["1","2"].include? @@role
+        puts "Enter '1' to be the code MAKER or '2' to be the code BREAKER."
+        @@role = gets.chomp
+      end
+      if @@role == "2"
+        is_breaker
+      else
+        is_maker
+      end
+    end
+  end
+  
+  def is_breaker
+    @guess = Breaker.new(@@round).guess
+    @round_score = []
+    judge_round
+  end
 
   def calc_round_result
     arr_guess = @guess.split('')
