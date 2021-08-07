@@ -66,6 +66,8 @@ class Game
       @round_score = %w[O O O O]
       show_round_score
       puts 'End game. Breaker won.'
+      puts "Do you want to play again? Press 'y' for yes (or any other key for no)."
+      replay_game
     elsif @guess == 'q'
       quit_game
     else
@@ -99,6 +101,7 @@ class Game
   def is_breaker
     @guess = Breaker.new(@@round).guess
     @round_score = []
+    # @@code = Maker.new.code
     judge_round
   end
 
@@ -114,23 +117,23 @@ class Game
     not_correct_position = []
     correct_position = []
     # find "O"
-    a.each_with_index do |guess_num, guess_idx|
-      idxs_of_num = b.each_index.select { |i| b[i] == guess_num }
-      if idxs_of_num.include?(guess_idx)
+    a.each_with_index do |num, idx|
+      if num == b[idx]
         @round_score << 'O'
-        correct_position << guess_idx
+        correct_position << idx
       end
     end
+
     # find "X"
     a.each_with_index do |guess_num, guess_idx|
       b.each_with_index do |code_num, code_idx|
-        if guess_num == code_num && guess_idx == code_idx
-          @round_score
-        elsif guess_num == code_num && guess_idx != code_idx && !not_correct_position.include?(code_idx) && !correct_position.include?(code_idx)
-          @round_score << 'X'
-          not_correct_position << code_idx
-          break
+        unless guess_num == code_num && guess_idx != code_idx && !not_correct_position.include?(code_idx) && !correct_position.include?(code_idx) && !correct_position.include?(guess_idx)
+          next
         end
+
+        @round_score << 'X'
+        not_correct_position << code_idx
+        break
       end
     end
     @round_score
@@ -139,13 +142,14 @@ class Game
   def show_round_score
     print 'Clues: '
     display = ''
-    @round_score.each { |num| display += "#{num} " }
+    @round_score.each { |num| display += "#{num} " if num == 'O' }
+    @round_score.each { |num| display += "#{num} " if num == 'X' }
     puts display
   end
 
   def to_next_turn
     if @@round == 12
-      #puts 'End game. Maker won'
+      # puts 'End game. Maker won'
       quit_game
     else
       initialize
@@ -165,13 +169,12 @@ class Game
     if select == 'y'
       @@code = Maker.new.code
       @@round = 0
-      @@role = ""
+      @@role = ''
       initialize
     else
       puts 'Thank you for playing Mastermind!'
     end
   end
 end
-
 puts Game.call_code
 round1 = Game.new
