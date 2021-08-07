@@ -4,6 +4,7 @@ require 'pry-byebug'
 
 class Maker
   attr_reader :code
+
   def initialize
     @code = gen_code
   end
@@ -44,15 +45,15 @@ class Breaker
 end
 
 class Game
-  #attr_reader :guess
+  # attr_reader :guess
   @@round = 0
-  @@role = ""
+  @@role = ''
 
   def initialize
     @@round += 1
     maker_or_breaker
   end
-  
+
   @@code = Maker.new.code
 
   # method for debugging
@@ -73,27 +74,28 @@ class Game
   end
 
   private
-  
+
   def maker_or_breaker
-    if @@role == "2"
+    case @@role
+    when '2'
       is_breaker
-    elsif @@role == "1"
+    when '1'
       is_maker
     else
       puts "It's time to play!\nWould you like to be the code MAKER or code BREAKER?\n\nPress '1' to be the code MAKER\nPress '2' to be the code BREAKER"
       @@role = gets.chomp
-      until ["1","2"].include? @@role
+      until %w[1 2].include? @@role
         puts "Enter '1' to be the code MAKER or '2' to be the code BREAKER."
         @@role = gets.chomp
       end
-      if @@role == "2"
+      if @@role == '2'
         is_breaker
       else
         is_maker
       end
     end
   end
-  
+
   def is_breaker
     @guess = Breaker.new(@@round).guess
     @round_score = []
@@ -109,20 +111,27 @@ class Game
   end
 
   def get_score(a, b)
+    not_correct_position = []
     correct_position = []
-    a.each_with_index do |num, idx| # find correct guess that position is correct
-      if num == b[idx]
+    # find "O"
+    a.each_with_index do |guess_num, guess_idx|
+      idxs_of_num = b.each_index.select { |i| b[i] == guess_num }
+      if idxs_of_num.include?(guess_idx)
         @round_score << 'O'
-        correct_position << idx
+        correct_position << guess_idx
       end
     end
-    rmd_correct_guess_arr = a.reject.with_index { |_e, i| correct_position.include? i }
-    rmd_correct_code_arr = b.reject.with_index { |_e, i| correct_position.include? i }
-
-    rmd_correct_guess_arr.each_with_index do |num, idx| # find correct guess that position is wrong
-      removed_num = rmd_correct_code_arr.delete_at(idx)
-      @round_score << 'X' if rmd_correct_code_arr.include?(num)
-      rmd_correct_code_arr.insert(idx, removed_num)
+    # find "X"
+    a.each_with_index do |guess_num, guess_idx|
+      b.each_with_index do |code_num, code_idx|
+        if guess_num == code_num && guess_idx == code_idx
+          @round_score
+        elsif guess_num == code_num && guess_idx != code_idx && !not_correct_position.include?(code_idx) && !correct_position.include?(code_idx)
+          @round_score << 'X'
+          not_correct_position << code_idx
+          break
+        end
+      end
     end
     @round_score
   end

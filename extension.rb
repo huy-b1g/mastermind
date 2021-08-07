@@ -1,33 +1,31 @@
 # frozen_string_literal: true
 
 require 'pry-byebug'
-result = []
-def get_score(a, b, result)
+
+def get_score(a, b)
+  not_correct_position = []
   correct_position = []
-  a.each_with_index do |num, idx|
-    if num == b[idx]
-      result << 'O'
-      correct_position << idx
+  # find "O"
+  a.each_with_index do |guess_num, guess_idx|
+    idxs_of_num = b.each_index.select { |i| b[i] == guess_num }
+    if idxs_of_num.include?(guess_idx)
+      @round_score << 'O'
+      correct_position << guess_idx
     end
   end
-  rmd_correct_guess_arr = a.reject.with_index { |_e, i| correct_position.include? i }
-  rmd_correct_code_arr = b.reject.with_index { |_e, i| correct_position.include? i }
-
-  rmd_correct_guess_arr.each_with_index do |num, idx|
-    removed_num = rmd_correct_code_arr.delete_at(idx)
-    result << 'X' if rmd_correct_code_arr.include?(num)
-    rmd_correct_code_arr.insert(idx, removed_num)
+  # find "X"
+  a.each_with_index do |guess_num, guess_idx|
+    b.each_with_index do |code_num, code_idx|
+      if guess_num == code_num && guess_idx == code_idx
+        @round_score
+      elsif guess_num == code_num && guess_idx != code_idx && !not_correct_position.include?(code_idx) && !correct_position.include?(code_idx)
+        @round_score << 'X'
+        not_correct_position << code_idx
+        break
+      end
+    end
   end
-  result
+  @round_score
 end
-a = [6, 4, 5, 4]
-b = [6, 4, 4, 6]
- def test
-    input = gets.chomp
-    until ["1","2"].include? input
-      input = gets.chomp
-    end
-    puts input
- end
 
-test
+puts get_score([3, 6, 5, 3], [6, 3, 3, 6])
