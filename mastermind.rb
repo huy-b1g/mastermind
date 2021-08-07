@@ -145,7 +145,8 @@ class Game
 
   def to_next_turn
     if @@round == 12
-      puts 'End game. Maker won'
+      #puts 'End game. Maker won'
+      quit_game
     else
       initialize
     end
@@ -164,6 +165,7 @@ class Game
     if select == 'y'
       @@code = Maker.new.code
       @@round = 0
+      @@role = ""
       initialize
     else
       puts 'Thank you for playing Mastermind!'
