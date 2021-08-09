@@ -54,10 +54,12 @@ class Game
     maker_or_breaker
   end
 
-  @@code = Maker.new.code
+  # @@code = Maker.new.code
+
+  private
 
   # method for debugging
-  def self.call_code
+  def call_code
     @@code
   end
 
@@ -74,8 +76,6 @@ class Game
       calc_round_result
     end
   end
-
-  private
 
   def maker_or_breaker
     case @@role
@@ -101,7 +101,8 @@ class Game
   def is_breaker
     @guess = Breaker.new(@@round).guess
     @round_score = []
-    # @@code = Maker.new.code
+    @@code = Maker.new.code if @@round == 1
+    puts 'Master-code is ' + call_code.to_s
     judge_round
   end
 
@@ -176,5 +177,4 @@ class Game
     end
   end
 end
-puts Game.call_code
 round1 = Game.new
