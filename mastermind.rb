@@ -2,6 +2,27 @@
 
 require 'pry-byebug'
 
+module UserInput
+  def get_input(role, round)
+    if role == '2'
+      puts "Round ##{round}: Type in four numbers (1-6) to guess code, or 'q' to quit game."
+    elsif role == '1'
+      puts "Type in four numbers (1-6) to set maste-code, or 'q' to quit game."
+    end
+    input = gets.chomp
+    check_input(input, role, round)
+  end
+
+  def check_input(input, role, round)
+    if input.split('').all? { |num| Array('1'..'6').include?(num) } && input.length == 4 || input == 'q'
+      input
+    else
+      puts 'You have to choose only from 1 to 6 for only 4 digits'
+      get_input(role, round)
+    end
+  end
+end
+
 class Maker
   attr_reader :code
 
@@ -19,35 +40,16 @@ class Maker
 end
 
 class Breaker
+  include UserInput
   attr_reader :guess
 
-  def initialize(round)
+  def initialize(round, role)
     @round = round
-    @guess = get_input
-  end
-
-  private
-
-  #better to maker get_input to a some thing like include ""
-  def get_input
-    if @@role == '2'
-      puts "Round ##{@round}: Type in four numbers (1-6) to guess code, or 'q' to quit game."
-    elsif @@role == '1'
-      puts "Type in four numbers (1-6) to set maste-code, or 'q' to quit game."
-    end
-    input = gets.chomp
-    check_input(input)
-  end
-
-  def check_input(input)
-    if input.split('').all? { |num| Array('1'..'6').include?(num) } && input.length == 4 || input == 'q'
-      input
-    else
-      puts 'You have to choose only from 1 to 6 for only 4 digits'
-      get_input
-    end
+    @guess = get_input(role, round)
   end
 end
+
+
 
 class Game
   # attr_reader :guess
@@ -107,7 +109,7 @@ class Game
 
   end
   def is_breaker
-    @guess = Breaker.new(@@round).guess
+    @guess = Breaker.new(@@round, @@role).guess
     @round_score = []
     @@code = Maker.new.code if @@round == 1
     #puts 'Master-code is ' + call_code.to_s
