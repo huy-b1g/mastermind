@@ -85,11 +85,8 @@ class Game
   end
 
   def maker_or_breaker
-    case @@role
-    when '2'
-      is_breaker
-    when '1'
-      is_maker
+    if @@role == '1' || @@role == '2'
+      create_code
     else
       puts "It's time to play!\nWould you like to be the code MAKER or code BREAKER?\n\nPress '1' to be the code MAKER\nPress '2' to be the code BREAKER"
       @@role = gets.chomp
@@ -97,18 +94,11 @@ class Game
         puts "Enter '1' to be the code MAKER or '2' to be the code BREAKER."
         @@role = gets.chomp
       end
-      if @@role == '2'
-        is_breaker
-      else
-        is_maker
-      end
+      create_code if @@role == '2' || @@role == '1'
     end
   end
   
-  def is_maker
-
-  end
-  def is_breaker
+  def create_code
     @guess = Breaker.new(@@round, @@role).guess
     @round_score = []
     @@code = Maker.new.code if @@round == 1
