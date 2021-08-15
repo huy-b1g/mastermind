@@ -1,7 +1,4 @@
 # frozen_string_literal: true
-
-require 'pry-byebug'
-
 module UserInput
   def get_input(role, round)
     if role == '2'
@@ -25,10 +22,11 @@ end
 
 class Maker
   attr_reader :code
+
   include UserInput
   def initialize(round, role)
     @code = gen_code if role == '2'
-    @code = get_input(role, round) if role == '1' 
+    @code = get_input(role, round) if role == '1'
   end
 
   private
@@ -46,11 +44,11 @@ class Breaker
 
   def initialize(round, role)
     @round = round
-    @guess = get_input(role, round) if role == '2' #user are breaker
-    if role == '1' #user are maker
-     computer_code = []
-     4.times { computer_code << rand(1..6)  }
-     @guess = computer_code.join('')
+    @guess = get_input(role, round) if role == '2' # user are breaker
+    if role == '1' # user are maker
+      computer_code = []
+      4.times { computer_code << rand(1..6) }
+      @guess = computer_code.join('')
     end
   end
 end
@@ -99,7 +97,7 @@ class Game
       create_code if @@role == '2' || @@role == '1'
     end
   end
-  
+
   def create_code
     @@code = Maker.new(@@round, @@role).code if @@round == 1
     @guess = Breaker.new(@@round, @@role).guess
