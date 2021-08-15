@@ -25,9 +25,10 @@ end
 
 class Maker
   attr_reader :code
-
-  def initialize
-    @code = gen_code
+  include UserInput
+  def initialize(round, role)
+    @code = gen_code if role == '2'
+    @code = get_input(role, round) if role == '1' 
   end
 
   private
@@ -45,11 +46,14 @@ class Breaker
 
   def initialize(round, role)
     @round = round
-    @guess = get_input(role, round)
+    @guess = get_input(role, round) if role == '2' #user are breaker
+    if role == '1' #user are maker
+     computer_code = []
+     4.times { computer_code << rand(1..6)  }
+     @guess = computer_code.join('')
+    end
   end
 end
-
-
 
 class Game
   # attr_reader :guess
@@ -60,8 +64,6 @@ class Game
     @@round += 1
     maker_or_breaker
   end
-
-  # @@code = Maker.new.code
 
   private
 
@@ -99,10 +101,11 @@ class Game
   end
   
   def create_code
+    @@code = Maker.new(@@round, @@role).code if @@round == 1
     @guess = Breaker.new(@@round, @@role).guess
     @round_score = []
-    @@code = Maker.new.code if @@round == 1
-    #puts 'Master-code is ' + call_code.to_s
+    puts 'Master-code is ' + call_code.to_s
+    puts "Computer's guess: " + @guess if @@role == '1'
     judge_round
   end
 
@@ -150,7 +153,6 @@ class Game
 
   def to_next_turn
     if @@round == 12
-      # puts 'End game. Maker won'
       quit_game
     else
       initialize
@@ -158,7 +160,7 @@ class Game
   end
 
   def quit_game
-    puts 'Game over. That was a hard code to break!'
+    puts 'Game over. Maker won!'
     puts "Here is the 'master code':"
     puts @@code
     puts "Do you want to play again? Press 'y' for yes (or any other key for no)."
@@ -168,7 +170,6 @@ class Game
   def replay_game
     select = gets.chomp
     if select == 'y'
-      @@code = Maker.new.code
       @@round = 0
       @@role = ''
       initialize
