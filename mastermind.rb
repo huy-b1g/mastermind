@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module UserInput
   def get_input(role, round)
     if role == '2'
@@ -62,7 +63,7 @@ class Game
     @@round += 1
     maker_or_breaker
   end
-
+  
   private
 
   # method for debugging
