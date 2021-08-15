@@ -102,7 +102,7 @@ class Game
     @@code = Maker.new(@@round, @@role).code if @@round == 1
     @guess = Breaker.new(@@round, @@role).guess
     @round_score = []
-    puts 'Master-code is ' + call_code.to_s
+    #puts 'Master-code is ' + call_code.to_s
     puts "Computer's guess: " + @guess if @@role == '1'
     judge_round
   end
